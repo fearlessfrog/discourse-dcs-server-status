@@ -8,6 +8,8 @@ Put this on its own line, outside a code block:
 [dcs-status]
 ```
 
+In the rich-text editor, typing or pasting this as a separate paragraph creates a status placeholder and saves the shortcode without escaping its brackets. Code examples and inline mentions of the shortcode stay literal. If an older post saved it as `\[dcs-status\]`, switch that post to Markdown editing and remove the backslashes.
+
 The card shows the server name, whether ED lists it, player count/capacity, mission, ED-reported mission time, connection address, and last successful refresh. All cards refer to the single server configured by an admin, including cards in old posts. There is no bot account or header panel.
 
 Colors inherit the forum's active Discourse theme, including light and dark palettes. No separate color configuration is required.

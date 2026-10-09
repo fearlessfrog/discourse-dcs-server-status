@@ -2,7 +2,7 @@
 
 # name: discourse-dcs-server-status
 # about: Live Eagle Dynamics DCS server status cards in forum posts.
-# version: 0.1.0
+# version: 0.1.1
 # authors: fearlessfrog
 # url: https://github.com/fearlessfrog/discourse-dcs-server-status
 # required_version: 2026.10.0-latest
