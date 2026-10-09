@@ -1,0 +1,7 @@
+en:
+  site_settings:
+    dcs_server_status_enabled: "Enable live DCS server status cards using [dcs-status] in posts."
+    dcs_server_status_username: "Eagle Dynamics login for a dedicated monitoring account. Kept server-side."
+    dcs_server_status_password: "Eagle Dynamics password. Masked and excluded from visitors and setting-change logs; stored in the Discourse database."
+    dcs_server_status_server_name: "Full server name exactly as listed by Eagle Dynamics. Update this setting if the server is renamed."
+    dcs_server_status_poll_interval_minutes: "Minutes between Eagle Dynamics refreshes (2–5). Forum views only read cached status."

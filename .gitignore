@@ -1,0 +1,8 @@
+node_modules/
+.bundle/
+vendor/
+coverage/
+tmp/
+.eslintcache
+*.gem
+.DS_Store

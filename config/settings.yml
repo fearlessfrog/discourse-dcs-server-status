@@ -1,0 +1,18 @@
+plugins:
+  dcs_server_status_enabled:
+    default: false
+    client: true
+  dcs_server_status_username:
+    default: ""
+    max: 255
+  dcs_server_status_password:
+    default: ""
+    max: 255
+    secret: true
+  dcs_server_status_server_name:
+    default: ""
+    max: 512
+  dcs_server_status_poll_interval_minutes:
+    default: 5
+    min: 2
+    max: 5
