@@ -15,6 +15,7 @@ const status = {
     players_max: 16,
     mission: "Example mission",
     mission_time_seconds: 172801,
+    mission_clock_seconds: 16801,
     ip_address: "192.0.2.10",
     port: 10308,
   },
@@ -48,6 +49,12 @@ for (const mobile of [false, true]) {
           .dom(".cooked .dcs-server-status-card")
           .includesText("2d 00:00:01");
         assert
+          .dom(".cooked .dcs-server-status-card__uptime")
+          .includesText("Uptime");
+        assert
+          .dom(".cooked .dcs-server-status-card__clock dd")
+          .hasText("04:40:01");
+        assert
           .dom(".cooked .dcs-server-status-placeholder")
           .doesNotIncludeText("view this post");
 
@@ -72,6 +79,9 @@ acceptance("DCS status | Composer preview", function (needs) {
     assert
       .dom(".d-editor-preview .dcs-server-status-card")
       .includesText("Example mission");
+    assert
+      .dom(".d-editor-preview .dcs-server-status-card__clock dd")
+      .hasText("04:40:01");
 
     await fillIn(".d-editor-input", "```\n[dcs-status]\n```");
     assert.dom(".d-editor-preview .dcs-server-status-card").doesNotExist();

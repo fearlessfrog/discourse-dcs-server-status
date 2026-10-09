@@ -48,6 +48,16 @@ module ::DcsServerStatus
       data = snapshot(config)
       success_at = data["last_success_at"]
       expired = success_at.nil? || Time.now.to_i - success_at >= RETENTION
+      server = expired ? nil : data["server"]
+      if server
+        elapsed = server["mission_time_seconds"]
+        offset = config.mission_start_time_offset_seconds
+        clock =
+          if !offset.nil? && elapsed.is_a?(Integer) && elapsed >= 0
+            (offset + elapsed) % 86_400
+          end
+        server = server.merge("mission_clock_seconds" => clock)
+      end
 
       {
         status: expired ? "unknown" : data.fetch("status", "unknown"),
@@ -58,7 +68,7 @@ module ::DcsServerStatus
                 Time.now.to_i - success_at > config.interval * 2
             ),
         last_success_at: success_at && Time.at(success_at).utc.iso8601,
-        server: expired ? nil : data["server"],
+        server: server,
         server_name: config.server_name
       }
     end

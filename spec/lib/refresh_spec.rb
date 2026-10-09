@@ -49,6 +49,7 @@ RSpec.describe DcsServerStatus::Refresh, :dcs_server_status do
         "port" => 10_308,
         "mission" => "Foothold & Cold War",
         "mission_time_seconds" => 96_898,
+        "mission_clock_seconds" => nil,
         "players" => 0,
         "players_max" => 16
       )

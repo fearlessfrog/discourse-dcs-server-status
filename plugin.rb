@@ -2,7 +2,7 @@
 
 # name: discourse-dcs-server-status
 # about: Live Eagle Dynamics DCS server status cards in forum posts.
-# version: 0.1.1
+# version: 0.1.2
 # authors: fearlessfrog
 # url: https://github.com/fearlessfrog/discourse-dcs-server-status
 # required_version: 2026.10.0-latest
@@ -25,6 +25,7 @@ after_initialize do
 
   on(:site_setting_changed) do |name, _old_value, _new_value|
     next unless name.to_s.start_with?("dcs_server_status_")
+    next if name.to_s == "dcs_server_status_mission_start_time_offset"
 
     if %w[dcs_server_status_username dcs_server_status_password].include?(
          name.to_s

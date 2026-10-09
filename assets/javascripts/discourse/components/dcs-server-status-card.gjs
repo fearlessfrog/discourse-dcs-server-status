@@ -61,8 +61,17 @@ export default class DcsServerStatusCard extends Component {
     );
   }
 
-  get missionTime() {
+  get uptime() {
     return formatMissionTime(this.server?.mission_time_seconds);
+  }
+
+  get hasMissionClock() {
+    const clock = this.server?.mission_clock_seconds;
+    return Number.isSafeInteger(clock) && clock >= 0 && clock < 86400;
+  }
+
+  get missionTime() {
+    return formatMissionTime(this.server?.mission_clock_seconds);
   }
 
   get missionName() {
@@ -103,10 +112,23 @@ export default class DcsServerStatusCard extends Component {
             <dt>{{i18n "dcs_server_status.players"}}</dt>
             <dd>{{this.server.players}} / {{this.server.players_max}}</dd>
           </div>
-          <div>
-            <dt>{{i18n "dcs_server_status.mission_time"}}</dt>
-            <dd>{{this.missionTime}}</dd>
+          <div class="dcs-server-status-card__uptime">
+            <dt title={{i18n "dcs_server_status.uptime_help"}}>
+              {{i18n "dcs_server_status.uptime"}}
+              <span class="sr-only">
+                —
+                {{i18n "dcs_server_status.uptime_help"}}</span>
+            </dt>
+            <dd>{{this.uptime}}</dd>
           </div>
+          {{#if this.hasMissionClock}}
+            <div class="dcs-server-status-card__clock">
+              <dt title={{i18n "dcs_server_status.mission_time_help"}}>{{i18n
+                  "dcs_server_status.mission_time"
+                }}</dt>
+              <dd>{{this.missionTime}}</dd>
+            </div>
+          {{/if}}
           <div class="dcs-server-status-card__mission">
             <dt>{{i18n "dcs_server_status.mission"}}</dt>
             <dd>{{this.missionName}}</dd>

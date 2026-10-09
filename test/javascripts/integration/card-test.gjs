@@ -17,6 +17,7 @@ const fixture = {
     players_max: 16,
     mission: '<img src=x onerror="alert(1)"> & Cold War',
     mission_time_seconds: 96898,
+    mission_clock_seconds: 27298,
     ip_address: "192.0.2.10",
     port: 10308,
   },
@@ -37,11 +38,40 @@ module("DCS status | Card", function (hooks) {
 
     assert.dom(".dcs-server-status-card").includesText("0 / 16");
     assert.dom(".dcs-server-status-card").includesText("1d 02:54:58");
+    assert.dom(".dcs-server-status-card__uptime").includesText("Uptime");
+    assert
+      .dom(".dcs-server-status-card__uptime .sr-only")
+      .includesText("current mission");
+    assert.dom(".dcs-server-status-card__clock dt").hasText("Mission time");
+    assert.dom(".dcs-server-status-card__clock dd").hasText("07:34:58");
     assert.dom(".dcs-server-status-card").includesText(fixture.server.mission);
     assert.dom(".dcs-server-status-card img").doesNotExist();
     assert
       .dom(".dcs-server-status-card__address")
       .includesText("192.0.2.10:10308");
+  });
+
+  test("hides an unconfigured clock and renders midnight without advancing cached times", async function (assert) {
+    pretender.get("/dcs-status.json", () =>
+      response({
+        ...fixture,
+        server: { ...fixture.server, mission_clock_seconds: null },
+      })
+    );
+    await render(<template><DcsServerStatusCard /></template>);
+    assert.dom(".dcs-server-status-card__clock").doesNotExist();
+    assert.dom(".dcs-server-status-card__uptime dd").hasText("1d 02:54:58");
+
+    const service = this.owner.lookup("service:dcs-server-status");
+    service.payload = {
+      ...fixture,
+      stale: true,
+      server: { ...fixture.server, mission_clock_seconds: 0 },
+    };
+    await settled();
+    assert.dom(".dcs-server-status-card__clock dd").hasText("00:00:00");
+    assert.dom(".dcs-server-status-card__uptime dd").hasText("1d 02:54:58");
+    assert.dom(".dcs-server-status-card__stale").includesText("Stale");
   });
 
   test("shares requests and releases the polling timer when cards disappear", async function (assert) {

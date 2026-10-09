@@ -49,6 +49,38 @@ RSpec.describe "DCS status endpoints", :dcs_server_status do
       expect(response.status).to eq(200)
     end
 
+    it "updates the mission clock from cache without queuing a refresh or clearing the session" do
+      stub_ed([ed_server("MISSION_TIME" => "65622")])
+      DcsServerStatus::Refresh.call
+      config = DcsServerStatus::Configuration.new
+      snapshot = DcsServerStatus::Store.snapshot(config)
+      session = DcsServerStatus::Store.session(config)
+      Jobs::DcsServerStatusRefresh.jobs.clear
+
+      [["04:40", 82_422], ["00:00", 65_622], ["", nil]].each do |offset, clock|
+        SiteSetting.dcs_server_status_mission_start_time_offset = offset
+        get "/dcs-status.json"
+        expect(response.status).to eq(200)
+        expect(response.parsed_body["server"]).to include(
+          "mission_time_seconds" => 65_622,
+          "mission_clock_seconds" => clock
+        )
+        expect(DcsServerStatus::Configuration.new.identity).to eq(
+          config.identity
+        )
+        expect(DcsServerStatus::Store.snapshot(config)).to eq(snapshot)
+        expect(DcsServerStatus::Store.session(config)).to eq(session)
+        expect(Jobs::DcsServerStatusRefresh.jobs).to be_empty
+      end
+
+      expect(
+        a_request(:get, DcsServerStatus::EdClient::LIST_URL)
+      ).to have_been_made.twice
+      expect(
+        a_request(:post, DcsServerStatus::EdClient::LOGIN_URL)
+      ).to have_been_made.once
+    end
+
     it "returns unavailable when the plugin is disabled" do
       SiteSetting.dcs_server_status_enabled = false
       get "/dcs-status.json"

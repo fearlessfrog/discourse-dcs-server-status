@@ -5,3 +5,6 @@ en:
     dcs_server_status_password: "Eagle Dynamics password. Masked and excluded from visitors and setting-change logs; stored in the Discourse database."
     dcs_server_status_server_name: "Full server name exactly as listed by Eagle Dynamics. Update this setting if the server is renamed."
     dcs_server_status_poll_interval_minutes: "Minutes between Eagle Dynamics refreshes (2–5). Forum views only read cached status."
+    dcs_server_status_mission_start_time_offset: "Mission start time offset: optional mission-local start clock in 24-hour HH:MM or HH:MM:SS format (for example, 04:40). Added to elapsed mission time to calculate the clock. Applies to every mission until changed; leave blank to hide the clock."
+  dcs_server_status:
+    invalid_mission_start_time_offset: "Enter a 24-hour time in HH:MM or HH:MM:SS format, or leave blank (for example, 04:40)."

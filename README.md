@@ -10,13 +10,15 @@ Put this on its own line, outside a code block:
 
 In the rich-text editor, typing or pasting this as a separate paragraph creates a status placeholder and saves the shortcode without escaping its brackets. Code examples and inline mentions of the shortcode stay literal. If an older post saved it as `\[dcs-status\]`, switch that post to Markdown editing and remove the backslashes.
 
-The card shows the server name, whether ED lists it, player count/capacity, mission, ED-reported mission time, connection address, and last successful refresh. All cards refer to the single server configured by an admin, including cards in old posts. There is no bot account or header panel.
+The card shows the server name, whether ED lists it, player count/capacity, mission uptime, optional calculated in-game mission clock, mission, connection address, and last successful refresh. All cards refer to the single server configured by an admin, including cards in old posts. There is no bot account or header panel.
 
 Colors inherit the forum's active Discourse theme, including light and dark palettes. No separate color configuration is required.
 
 Example card with sample data in a dark theme:
 
 ![DCS server status card](docs/images/status-card.png)
+
+[View the mobile example](docs/images/status-card-mobile.png).
 
 ## Installation
 
@@ -40,8 +42,9 @@ Use your actual container name if it is not `app`. The rebuild briefly interrupt
 1. Create a dedicated ED account and confirm it can access the server list when logged in. Do not use an account with purchased modules for monitoring.
 2. In **Admin → Plugins → DCS Server Status plugin → Settings**, enter the ED username, ED password, and full server name exactly as ED lists it (for example, `Example DCS Server`), then enable the plugin.
 3. Leave the polling interval at five minutes, or select two to five minutes.
-4. Open the plugin’s **Connection** tab, select **Refresh now**, wait a few seconds, and select **Reload diagnostics**. This is also the live unattended sign-in smoke test.
-5. Create a test post with `[dcs-status]` on its own line. Check it as an admin, a regular member, and a guest if guest access is enabled.
+4. Optionally set **Mission start time offset** to the mission's starting clock, such as `04:40` or `04:40:30`. Use 24-hour `HH:MM` or `HH:MM:SS`; leave blank to hide the calculated clock.
+5. Open the plugin’s **Connection** tab, select **Refresh now**, wait a few seconds, and select **Reload diagnostics**. This is also the live unattended sign-in smoke test.
+6. Create a test post with `[dcs-status]` on its own line. Check it as an admin, a regular member, and a guest if guest access is enabled.
 
 If authentication fails, check the Connection diagnostic and log into ED manually with the dedicated account. CAPTCHA/interactive verification is not automated. Successful browser access alone does not establish that unattended Ruby login works.
 
@@ -51,7 +54,10 @@ If authentication fails, check the Connection diagnostic and log into ED manuall
 - All visible cards share one browser request per minute. Requests pause in hidden tabs and stop after cards are removed. Status is a current view, not a historical snapshot of when the post was written.
 - **Online** means the server appears in ED’s list. **Not listed by Eagle Dynamics** means a valid list did not contain its exact name; it is not proof that the server process is offline.
 - Refresh failures retain the last successful result, marked **Stale**, for at most 24 hours. Results also become stale after twice the polling interval without a success. Before a first success, or after retention expires, status is unavailable.
-- **Mission time** displays ED's `MISSION_TIME` value in `HH:MM:SS` format, matching its server-list display (for example, `65622` seconds becomes `18:13:42`). Values over 24 hours include days. The supplied JSON has no separate time-of-day or mission-start field, so the plugin does not derive an in-game clock or server uptime from it. Mission names are text; ED descriptions and formatted HTML are not rendered.
+- **Uptime** displays ED's `MISSION_TIME` elapsed duration for the current mission in `HH:MM:SS` format, with days for durations over 24 hours. It resets when the mission restarts; it is not the uptime of the DCS server process.
+- **Mission time** is an optional calculated mission-local clock: `(configured starting clock + ED elapsed seconds) modulo 24 hours`. A start of `04:40` plus uptime `18:13:42` displays `22:53:42`. ED's JSON does not supply the starting clock; update the fixed offset manually whenever a mission starts at a different time. The setting applies to every mission until changed.
+- Both times represent ED's last successful observation, including when marked **Stale**. The browser does not advance them between refreshes or convert the mission clock to the viewer's timezone. This is a calculated clock, not an independent reading of DCS's current time. Changing or clearing the offset uses the existing cache on the next card request without an ED refresh or sign-in.
+- `/dcs-status.json` retains `server.mission_time_seconds` and adds `server.mission_clock_seconds` (seconds into the mission-local day, or `null` when unconfigured). Mission names are escaped text; ED descriptions and formatted HTML are not rendered.
 - Names must be unique and match exactly. Update the setting if the server is renamed. IP changes are picked up automatically.
 - Username and password are server-only site settings. The password uses Discourse’s masked secret field and filtered setting-change logs. Standard site-setting storage is not encrypted at rest: administrators, database operators, and backups can access it.
 - ED cookies are kept server-side in namespaced Redis for up to 24 hours. Credentials and cookies are excluded from public payloads, job arguments, and plugin logs. Changing credentials clears the session and cached result.
