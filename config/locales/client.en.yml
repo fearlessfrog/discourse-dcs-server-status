@@ -15,6 +15,18 @@ en:
       last_updated: "Last successful refresh: %{timestamp}"
       elapsed_days: "%{days}d %{time}"
       stale: "Stale — showing the last known result"
+      header:
+        short_title: "DCS"
+        hide: "Hide DCS header status"
+        restore: "Show DCS header status"
+        mission_time: "Mission time %{time}"
+        players: "%{players}/%{capacity} players"
+        stale: "Stale"
+        status:
+          online: "Online"
+          not_listed: "Not listed"
+          unknown: "Unavailable"
+          loading: "Loading…"
       status:
         online: "Online"
         not_listed: "Not listed by Eagle Dynamics"

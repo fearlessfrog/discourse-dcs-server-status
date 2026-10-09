@@ -1,10 +1,13 @@
 en:
   site_settings:
     dcs_server_status_enabled: "Enable live DCS server status cards using [dcs-status] in posts."
+    dcs_server_status_header_enabled: "Show DCS status in header on wide desktop screens. Visitors can hide it and restore it with the DCS button; their choice is remembered in that browser."
+    dcs_server_status_header_url: "Header badge destination URL: optional forum path (for example, /t/example-server-status/123) or HTTP/HTTPS URL. Clicking the badge navigates there in the same tab. Leave blank to open a detailed status popover. Publicly visible."
     dcs_server_status_username: "Eagle Dynamics login for a dedicated monitoring account. Kept server-side."
     dcs_server_status_password: "Eagle Dynamics password. Masked and excluded from visitors and setting-change logs; stored in the Discourse database."
     dcs_server_status_server_name: "Full server name exactly as listed by Eagle Dynamics. Update this setting if the server is renamed."
     dcs_server_status_poll_interval_minutes: "Minutes between Eagle Dynamics refreshes (2–5). Forum views only read cached status."
     dcs_server_status_mission_start_time_offset: "Mission start time offset: optional mission-local start clock in 24-hour HH:MM or HH:MM:SS format (for example, 04:40). Added to elapsed mission time to calculate the clock. Applies to every mission until changed; leave blank to hide the clock."
   dcs_server_status:
+    invalid_header_url: "Enter a forum path beginning with / or a valid HTTP/HTTPS URL without credentials, or leave blank."
     invalid_mission_start_time_offset: "Enter a 24-hour time in HH:MM or HH:MM:SS format, or leave blank (for example, 04:40)."

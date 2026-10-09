@@ -2,6 +2,13 @@ plugins:
   dcs_server_status_enabled:
     default: false
     client: true
+  dcs_server_status_header_enabled:
+    default: false
+    client: true
+  dcs_server_status_header_url:
+    default: ""
+    client: true
+    validator: "DcsServerStatus::HeaderUrlValidator"
   dcs_server_status_username:
     default: ""
     max: 255

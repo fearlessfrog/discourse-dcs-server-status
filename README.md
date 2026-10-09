@@ -10,7 +10,7 @@ Put this on its own line, outside a code block:
 
 In the rich-text editor, typing or pasting this as a separate paragraph creates a status placeholder and saves the shortcode without escaping its brackets. Code examples and inline mentions of the shortcode stay literal. If an older post saved it as `\[dcs-status\]`, switch that post to Markdown editing and remove the backslashes.
 
-The card shows the server name, whether ED lists it, player count/capacity, mission uptime, optional calculated in-game mission clock, mission, connection address, and last successful refresh. All cards refer to the single server configured by an admin, including cards in old posts. There is no bot account or header panel.
+The card shows the server name, whether ED lists it, player count/capacity, mission uptime, optional calculated in-game mission clock, mission, connection address, and last successful refresh. All cards refer to the single server configured by an admin, including cards in old posts. An optional desktop header badge keeps a compact summary visible while browsing. There is no bot account.
 
 Colors inherit the forum's active Discourse theme, including light and dark palettes. No separate color configuration is required.
 
@@ -47,6 +47,20 @@ Use your actual container name if it is not `app`. The rebuild briefly interrupt
 6. Create a test post with `[dcs-status]` on its own line. Check it as an admin, a regular member, and a guest if guest access is enabled.
 
 If authentication fails, check the Connection diagnostic and log into ED manually with the dedicated account. CAPTCHA/interactive verification is not automated. Successful browser access alone does not establish that unattended Ruby login works.
+
+## Optional desktop header badge
+
+Enable **Show DCS status in header** in the plugin Settings. The badge appears before the search/profile controls in desktop mode at widths of at least `64rem` (normally 1024px). It shows server name and status on the first line, then mission time (`HH:MM`) and players/capacity on the second. It does not appear on mobile or narrow layouts. The mission clock requires a configured start-time offset.
+
+![Desktop DCS header badge](docs/images/header-badge.png)
+
+[View it in the desktop header](docs/images/header-desktop.png) · [View the details popover](docs/images/header-details.png)
+
+Leave **Header badge destination URL** blank to open the detailed card in a popover when clicked. Alternatively, enter a forum path such as `/t/example-server-status/123` or a public HTTP/HTTPS URL to link directly to a post containing the full card and other information. The link opens in the same tab; normal modifier-click and middle-click work. Both settings change presentation without clearing caches or triggering an ED refresh.
+
+Visitors can select **×** to hide the summary. A small **DCS** button restores it. This choice is remembered in that browser across visits and synchronized between its open tabs; if browser storage is unavailable it lasts for the current visit. The dismiss and restore controls do not follow the configured link. Hiding the header does not hide post cards.
+
+The header shares cached requests with post cards. A dismissed badge, mobile view, or narrow layout does not poll for the header; polling continues if other cards are visible. **Not listed** means ED did not list the server; it does not establish that the server process is offline. **Stale** explicitly identifies the last known values.
 
 ## Behavior and credentials
 

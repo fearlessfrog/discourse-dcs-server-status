@@ -65,6 +65,110 @@
   margin-block: 0.75em;
 }
 
+.dcs-header-status {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: 20rem;
+  min-width: 0;
+  margin-inline: 0.75rem 0.5rem;
+  color: var(--header_primary);
+
+  .dcs-header-trigger,
+  .dcs-header-link {
+    display: grid;
+    grid-template-rows: repeat(2, minmax(1.1em, auto));
+    gap: 0.1rem;
+    min-width: 0;
+    height: auto;
+    padding: 0.15em 0.25em;
+    color: inherit;
+    font-size: var(--font-down-1);
+    line-height: 1.15;
+    text-align: start;
+    text-decoration: none;
+  }
+
+  .dcs-header-dismiss,
+  .dcs-header-restore {
+    flex: 0 0 auto;
+    color: inherit;
+    padding: 0.35em;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
+
+    .d-icon {
+      color: inherit;
+    }
+  }
+}
+
+.dcs-header-link:focus-visible,
+.dcs-header-trigger:focus-visible,
+.dcs-header-dismiss:focus-visible,
+.dcs-header-restore:focus-visible {
+  outline: 2px solid var(--tertiary);
+  outline-offset: 2px;
+}
+
+.dcs-header-first-line,
+.dcs-header-second-line {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.dcs-header-name {
+  min-width: 0;
+  max-width: 11rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+}
+
+.dcs-header-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  flex: 0 0 auto;
+
+  &[data-status="online"] {
+    color: var(--success);
+  }
+
+  &[data-status="not_listed"] {
+    color: var(--danger);
+  }
+
+  &[data-status="stale"] {
+    color: var(--highlight-high, #b8860b);
+  }
+}
+
+.dcs-header-dot {
+  width: 0.45em;
+  height: 0.45em;
+  border-radius: 50%;
+  background: currentcolor;
+}
+
+.dcs-header-second-line {
+  color: var(--header_primary-high);
+  font-variant-numeric: tabular-nums;
+}
+
+.dcs-header-details {
+  width: min(24rem, calc(100vw - 2rem));
+  max-height: 70vh;
+  overflow: auto;
+
+  .dcs-server-status-card {
+    margin: 0;
+  }
+}
+
 .dcs-server-status-connection {
   dd {
     margin: 0 0 1em;
