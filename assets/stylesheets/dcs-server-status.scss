@@ -65,6 +65,15 @@
   margin-block: 0.75em;
 }
 
+// Keep the badge beside the controls even when no topic title fills the header.
+.d-header .before-header-panel-outlet:has(.dcs-header-status) {
+  margin-inline-start: auto;
+
+  + .panel {
+    margin-inline-start: 0;
+  }
+}
+
 .dcs-header-status {
   display: flex;
   align-items: center;

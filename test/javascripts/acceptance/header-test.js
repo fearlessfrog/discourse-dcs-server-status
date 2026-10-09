@@ -64,6 +64,17 @@ for (const mobile of [false, true]) {
         });
       } else {
         test("header visibility, post cards and subscriptions survive topic navigation", async function (assert) {
+          const assertBesideControls = (message) => {
+            const badge = document
+              .querySelector(".dcs-header-status")
+              .getBoundingClientRect();
+            const panel = document
+              .querySelector(".d-header .panel")
+              .getBoundingClientRect();
+            const gap = panel.left - badge.right;
+            assert.true(gap >= 0, `${message}: no overlap`);
+            assert.true(gap <= 16, `${message}: no excess space`);
+          };
           await visit("/t/-/130");
           const service = this.container.lookup("service:dcs-server-status");
           assert.dom(".cooked .dcs-server-status-card").exists();
@@ -96,15 +107,20 @@ for (const mobile of [false, true]) {
             badge.right <= panel.left,
             "the badge does not overlap search or profile controls"
           );
+          assertBesideControls("the topic badge stays beside the controls");
           assert.strictEqual(service.consumers, 2);
           await click(".dcs-header-dismiss");
           assert.strictEqual(service.consumers, 1);
           await visit("/");
           assert.dom(".dcs-header-restore").exists();
+          assertBesideControls(
+            "the homepage restore button stays beside the controls"
+          );
           assert.strictEqual(service.consumers, 0);
           assert.strictEqual(service.timer, null);
           await click(".dcs-header-restore");
           assert.dom(".dcs-header-trigger").exists();
+          assertBesideControls("the homepage badge stays beside the controls");
           assert.strictEqual(service.consumers, 1);
         });
       }
