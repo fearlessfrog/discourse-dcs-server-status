@@ -1,12 +1,10 @@
 import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
 import { registerDestructor } from "@ember/destroyable";
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
 import { ALL_PAGES_EXCLUDED_ROUTES } from "discourse/components/welcome-banner";
 import DMenu from "discourse/float-kit/components/d-menu";
-import { hasSpriteSymbol } from "discourse/lib/svg-sprite-loader";
 import DButton from "discourse/ui-kit/d-button";
 import { i18n } from "discourse-i18n";
 import DcsServerStatusCard from "discourse/plugins/discourse-dcs-server-status/discourse/components/dcs-server-status-card";
@@ -21,8 +19,8 @@ export default class DcsServerStatusMobileHeader extends Component {
   @service currentUser;
   @service header;
   @service router;
+  @service dcsHeaderPresentation;
 
-  @tracked icon = "jet-fighter";
   menu = null;
 
   constructor() {
@@ -31,32 +29,20 @@ export default class DcsServerStatusMobileHeader extends Component {
     registerDestructor(this, () =>
       this.router.off("routeWillChange", this.closeForNavigation)
     );
-    if (this.site.mobileView) {
-      const updateIcon = () => {
-        this.icon = hasSpriteSymbol("mudspike-fighter-jet")
-          ? "mudspike-fighter-jet"
-          : "jet-fighter";
-      };
-      updateIcon();
-      // Theme symbols arrive asynchronously, including in production builds.
-      const observer = new MutationObserver(updateIcon);
-      observer.observe(document.getElementById("svg-sprites"), {
-        childList: true,
-        subtree: true,
-      });
-      registerDestructor(this, () => observer.disconnect());
-    }
   }
 
   get available() {
     return (
-      this.site.mobileView &&
+      this.dcsHeaderPresentation.compact &&
+      // Desktop guest authentication buttons precede the normal icon group.
+      Boolean(this.args.beforePanel) ===
+        (!this.currentUser && !this.site.mobileView) &&
       this.siteSettings.dcs_server_status_enabled &&
       this.siteSettings.dcs_server_status_header_enabled &&
       (!this.siteSettings.login_required || this.currentUser) &&
       this.site.can_search &&
       !this.header.headerButtonsHidden.includes("search") &&
-      !this.header.topicInfoVisible &&
+      (!this.site.mobileView || !this.header.topicInfoVisible) &&
       !ALL_PAGES_EXCLUDED_ROUTES.includes(this.router.currentRouteName)
     );
   }
@@ -87,7 +73,7 @@ export default class DcsServerStatusMobileHeader extends Component {
       <li class="header-dropdown-toggle dcs-mobile-header">
         <DMenu
           @ariaLabel={{i18n "dcs_server_status.header.mobile_show"}}
-          @icon={{this.icon}}
+          @icon={{this.dcsHeaderPresentation.icon}}
           @identifier="dcs-mobile-details"
           @modalForMobile={{false}}
           @offset={{20}}

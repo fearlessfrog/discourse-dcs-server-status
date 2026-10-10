@@ -11,9 +11,8 @@ import DiscourseURL from "discourse/lib/url";
 import { setupRenderingTest } from "discourse/tests/helpers/component-test";
 import pretender, { response } from "discourse/tests/helpers/create-pretender";
 import DcsServerStatusCard from "discourse/plugins/discourse-dcs-server-status/discourse/components/dcs-server-status-card";
-import DcsServerStatusHeader, {
-  HEADER_MEDIA_QUERY,
-} from "discourse/plugins/discourse-dcs-server-status/discourse/components/dcs-server-status-header";
+import DcsServerStatusHeader from "discourse/plugins/discourse-dcs-server-status/discourse/components/dcs-server-status-header";
+import { HEADER_MEDIA_QUERY } from "discourse/plugins/discourse-dcs-server-status/discourse/services/dcs-header-presentation";
 
 const fixture = {
   status: "online",
@@ -118,7 +117,11 @@ module("DCS status | Header badge", function (hooks) {
     const service = this.owner.lookup("service:dcs-server-status");
     await click(".dcs-header-dismiss");
     assert.dom(".dcs-header-link").doesNotExist();
-    assert.dom(".dcs-header-restore").hasText("DCS");
+    assert.dom(".dcs-header-restore").doesNotIncludeText("DCS");
+    assert.dom(".dcs-header-restore use").hasAttribute("href", "#jet-fighter");
+    assert
+      .dom(".dcs-header-restore")
+      .hasAttribute("aria-label", "Show DCS header status");
     assert.true(this.preferences.dismissed);
     assert.strictEqual(service.consumers, 0);
     assert.strictEqual(service.timer, null);

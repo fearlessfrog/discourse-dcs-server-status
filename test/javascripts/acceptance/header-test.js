@@ -1,5 +1,6 @@
 import { click, settled, visit } from "@ember/test-helpers";
 import { test } from "qunit";
+import sinon from "sinon";
 import KeyValueStore from "discourse/lib/key-value-store";
 import { cloneJSON } from "discourse/lib/object";
 import topicFixtures from "discourse/tests/fixtures/topic";
@@ -8,6 +9,7 @@ import {
   HEADER_HIDDEN_KEY,
   HEADER_STORE_NAMESPACE,
 } from "discourse/plugins/discourse-dcs-server-status/discourse/services/dcs-header-preference";
+import { HEADER_MEDIA_QUERY } from "discourse/plugins/discourse-dcs-server-status/discourse/services/dcs-header-presentation";
 
 for (const mobile of [false, true]) {
   acceptance(
@@ -146,6 +148,76 @@ for (const mobile of [false, true]) {
           assert.dom(".dcs-header-trigger").exists();
           assertBesideControls("the homepage badge stays beside the controls");
           assert.strictEqual(service.consumers, 1);
+        });
+      }
+    }
+  );
+}
+
+async function assertCompactStaysIdle(assert, container) {
+  assert.dom(".dcs-mobile-header-trigger").exists({ count: 1 });
+  assert.dom(".dcs-header-status").doesNotExist();
+  const service = container.lookup("service:dcs-server-status");
+  assert.strictEqual(service.consumers, 0);
+  assert.strictEqual(service.timer, null);
+  container.lookup("service:site-settings").search_experience = "search_field";
+  await settled();
+  assert.dom(".dcs-mobile-header-trigger").exists({ count: 1 });
+}
+
+for (const loggedIn of [false, true]) {
+  acceptance(
+    `DCS status | Compact desktop ${loggedIn ? "member" : "guest"} placement`,
+    function (needs) {
+      if (loggedIn) {
+        needs.user();
+      }
+      needs.settings({
+        dcs_server_status_enabled: true,
+        dcs_server_status_header_enabled: true,
+        search_experience: "search_icon",
+        enable_welcome_banner: false,
+      });
+      needs.hooks.beforeEach(function () {
+        const original = window.matchMedia.bind(window);
+        const compactQuery = new EventTarget();
+        compactQuery.matches = false;
+        sinon
+          .stub(window, "matchMedia")
+          .callsFake((query) =>
+            query === HEADER_MEDIA_QUERY ? compactQuery : original(query)
+          );
+      });
+      needs.hooks.afterEach(function () {
+        sinon.restore();
+      });
+      if (loggedIn) {
+        test("uses one idle icon immediately before search", async function (assert) {
+          await visit("/");
+          const icon = document.querySelector(".dcs-mobile-header");
+          assert.strictEqual(
+            icon.nextElementSibling,
+            document.querySelector(".search-dropdown"),
+            "members see the fighter immediately before search"
+          );
+          await assertCompactStaysIdle(assert, this.container);
+        });
+      } else {
+        test("uses one idle icon before authentication buttons", async function (assert) {
+          await visit("/");
+          const icon = document.querySelector(".dcs-mobile-header");
+          const auth = document.querySelector(".auth-buttons");
+          assert.strictEqual(
+            icon.compareDocumentPosition(auth),
+            Node.DOCUMENT_POSITION_FOLLOWING,
+            "guests see the fighter before authentication buttons"
+          );
+          const gap =
+            auth.getBoundingClientRect().left -
+            icon.getBoundingClientRect().right;
+          assert.true(gap >= 0, "no overlap");
+          assert.true(gap <= 16, "no excess gap");
+          await assertCompactStaysIdle(assert, this.container);
         });
       }
     }

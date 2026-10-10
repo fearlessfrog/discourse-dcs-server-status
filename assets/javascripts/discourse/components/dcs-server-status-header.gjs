@@ -1,39 +1,31 @@
 import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
-import { registerDestructor } from "@ember/destroyable";
 import { action } from "@ember/object";
 import { schedule } from "@ember/runloop";
 import { service } from "@ember/service";
 import DButton from "discourse/ui-kit/d-button";
 import DcsServerStatusHeaderSummary from "discourse/plugins/discourse-dcs-server-status/discourse/components/dcs-server-status-header-summary";
-
-export const HEADER_MEDIA_QUERY = "(min-width: 64rem)";
+import DcsServerStatusMobileHeader from "discourse/plugins/discourse-dcs-server-status/discourse/components/dcs-server-status-mobile-header";
 
 export default class DcsServerStatusHeader extends Component {
   @service site;
   @service siteSettings;
   @service currentUser;
   @service dcsHeaderPreference;
+  @service dcsHeaderPresentation;
 
-  @tracked wide = false;
-
-  constructor() {
-    super(...arguments);
-    const query = window.matchMedia(HEADER_MEDIA_QUERY);
-    this.wide = query.matches;
-    const update = () => {
-      this.wide = query.matches;
-    };
-    query.addEventListener("change", update);
-    registerDestructor(this, () => query.removeEventListener("change", update));
+  get guestCompact() {
+    return (
+      !this.currentUser &&
+      !this.site.mobileView &&
+      this.dcsHeaderPresentation.compact
+    );
   }
 
   get available() {
     return (
       this.siteSettings.dcs_server_status_enabled &&
       this.siteSettings.dcs_server_status_header_enabled &&
-      !this.site.mobileView &&
-      this.wide &&
+      this.dcsHeaderPresentation.wideDesktop &&
       (!this.siteSettings.login_required || this.currentUser)
     );
   }
@@ -59,6 +51,11 @@ export default class DcsServerStatusHeader extends Component {
   }
 
   <template>
+    {{#if this.guestCompact}}
+      <ul class="icons d-header-icons dcs-compact-guest-controls">
+        <DcsServerStatusMobileHeader @beforePanel={{true}} />
+      </ul>
+    {{/if}}
     {{#if this.available}}
       <div class="dcs-header-status">
         {{#if this.dcsHeaderPreference.dismissed}}
@@ -66,7 +63,7 @@ export default class DcsServerStatusHeader extends Component {
             class="btn-transparent dcs-header-restore"
             @action={{this.restore}}
             @ariaLabel="dcs_server_status.header.restore"
-            @label="dcs_server_status.header.short_title"
+            @icon={{this.dcsHeaderPresentation.icon}}
             @title="dcs_server_status.header.restore"
           />
         {{else}}

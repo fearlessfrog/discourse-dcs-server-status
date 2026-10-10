@@ -50,7 +50,7 @@ If authentication fails, check the Connection diagnostic and log into ED manuall
 
 ## Optional header status
 
-Enable **Show DCS status in header** in the plugin Settings. The desktop badge appears before the search/profile controls at widths of at least `64rem` (normally 1024px). It shows server name and status on the first line, then mission time (`HH:MM`) and players/capacity on the second. Narrow desktop layouts have no badge. The mission clock requires a configured start-time offset.
+Enable **Show DCS status in header** in the plugin Settings. The desktop badge appears before the search/profile controls at widths of at least `64rem` (normally 1024px). It shows server name and status on the first line, then mission time (`HH:MM`) and players/capacity on the second. Below that breakpoint, a compact fighter icon opens the detailed card, covering both smaller desktop windows and mobile. The mission clock requires a configured start-time offset.
 
 ![Desktop DCS header badge](docs/images/header-badge.png)
 
@@ -58,17 +58,19 @@ Enable **Show DCS status in header** in the plugin Settings. The desktop badge a
 
 Leave **Header badge destination URL** blank to open the detailed card in a popover when clicked. Alternatively, enter a forum path such as `/t/example-server-status/123` or a public HTTP/HTTPS URL to link directly to a post containing the full card and other information. The link opens in the same tab; normal modifier-click and middle-click work. Both settings change presentation without clearing caches or triggering an ED refresh.
 
-On mobile, a small fighter-plane icon appears immediately before search. Tap it to open the full card below the header; tap **×**, the icon again, or outside the card to close it. Keyboard users can open it with Enter/Space and close it with Escape. When a destination URL is configured, **More server information** inside the card links there; tapping the icon always opens details. The active theme's existing fighter symbol is used when available, with a standard fighter icon as the fallback.
+On mobile and desktop windows below `64rem`, a small fighter-plane icon appears immediately before search, or before the remaining header icons when search uses a separate field. Desktop guests see it before Sign Up/Log In, matching the full badge and restore icon. Tap it to open the full card below the header; tap **×**, the icon again, or outside the card to close it. Keyboard users can open it with Enter/Space and close it with Escape. When a destination URL is configured, **More server information** inside the card links there; tapping the compact icon always opens details. The active theme's existing fighter symbol is used when available, with a standard fighter icon as the fallback.
 
 ![Mobile DCS header icon](docs/images/header-mobile.png)
 
 [View the mobile details](docs/images/header-mobile-details.png).
 
-The mobile card starts closed and closes on navigation. Its icon disappears when mobile search/header controls are hidden, including when a topic title occupies the header. Closing mobile details does not change desktop dismissal preferences, and dismissing the desktop summary does not remove the mobile icon. Guests on login-required forums have no DCS header controls.
+The compact card starts closed and closes on navigation or when resizing switches to the full badge. Its icon disappears when search/header controls are explicitly hidden; on mobile it also disappears when a topic title occupies the header. Desktop topic titles do not hide the compact icon. Forced mobile mode uses the icon at any width. Guests on login-required forums have no DCS header controls.
 
-Visitors can select **×** to hide the summary. A small **DCS** button restores it. This choice is remembered in that browser across visits and synchronized between its open tabs; if browser storage is unavailable it lasts for the current visit. The dismiss and restore controls do not follow the configured link. Hiding the header does not hide post cards.
+On wide desktop, visitors can select **×** to hide the summary. A fighter icon in the same position restores the full badge; it does not open a popover or follow the configured link. This choice is remembered in that browser across visits and synchronized between its open tabs; if browser storage is unavailable it lasts for the current visit. Closing compact details does not change desktop dismissal, and dismissing the desktop summary does not remove the compact icon. Resizing back to wide desktop restores the previously selected state. Hiding the header does not hide post cards.
 
-The header shares cached requests with post cards. A dismissed desktop badge, narrow desktop layout, or closed mobile icon does not poll for the header; polling continues if other cards are visible. Opening mobile details subscribes to the same cached status, refreshed every minute while the tab is visible, and closing releases that subscription. **Not listed** means ED did not list the server; it does not establish that the server process is offline. **Stale** explicitly identifies the last known values.
+[View the desktop restore icon](docs/images/header-restore.png) · [View the compact desktop header](docs/images/header-compact-desktop.png).
+
+The header shares cached requests with post cards. A desktop restore icon or closed compact icon does not poll for the header; polling continues if other cards are visible. Opening compact details subscribes to the same cached status, refreshed every minute while the tab is visible, and closing releases that subscription. **Not listed** means ED did not list the server; it does not establish that the server process is offline. **Stale** explicitly identifies the last known values.
 
 ## Behavior and credentials
 

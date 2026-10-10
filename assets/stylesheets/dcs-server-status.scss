@@ -66,12 +66,24 @@
 }
 
 // Keep the badge beside the controls even when no topic title fills the header.
-.d-header .before-header-panel-outlet:has(.dcs-header-status) {
+.d-header
+  .before-header-panel-outlet:has(
+    .dcs-header-status,
+    .dcs-compact-guest-controls .dcs-mobile-header
+  ) {
   margin-inline-start: auto;
 
   + .panel {
     margin-inline-start: 0;
   }
+}
+
+.dcs-compact-guest-controls:has(.dcs-mobile-header) {
+  margin-inline: 0.75rem 0.5rem;
+}
+
+.dcs-compact-guest-controls:not(:has(.dcs-mobile-header)) {
+  display: none;
 }
 
 .dcs-header-status {
@@ -118,6 +130,10 @@
 .dcs-header-restore:focus-visible {
   outline: 2px solid var(--tertiary);
   outline-offset: 2px;
+}
+
+.dcs-header-restore .d-icon {
+  font-size: var(--font-up-4);
 }
 
 .dcs-header-first-line,
