@@ -1,8 +1,8 @@
 en:
   site_settings:
     dcs_server_status_enabled: "Enable live DCS server status cards using [dcs-status] in posts."
-    dcs_server_status_header_enabled: "Show DCS status in header on wide desktop screens. Visitors can hide it and restore it with the DCS button; their choice is remembered in that browser."
-    dcs_server_status_header_url: "Header badge destination URL: optional forum path (for example, /t/example-server-status/123) or HTTP/HTTPS URL. Clicking the badge navigates there in the same tab. Leave blank to open a detailed status popover. Publicly visible."
+    dcs_server_status_header_enabled: "Show DCS status in header: a summary on wide desktop screens and a fighter icon beside mobile search that opens details. Desktop visitors can hide the summary and restore it with the DCS button; their choice is remembered in that browser."
+    dcs_server_status_header_url: "Header badge destination URL: optional forum path (for example, /t/example-server-status/123) or HTTP/HTTPS URL. Clicking the desktop badge navigates there in the same tab; mobile details include a link to it. Leave blank for details only. Publicly visible."
     dcs_server_status_username: "Eagle Dynamics login for a dedicated monitoring account. Kept server-side."
     dcs_server_status_password: "Eagle Dynamics password. Masked and excluded from visitors and setting-change logs; stored in the Discourse database."
     dcs_server_status_server_name: "Full server name exactly as listed by Eagle Dynamics. Update this setting if the server is renamed."

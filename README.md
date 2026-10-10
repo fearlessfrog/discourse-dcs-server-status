@@ -10,7 +10,7 @@ Put this on its own line, outside a code block:
 
 In the rich-text editor, typing or pasting this as a separate paragraph creates a status placeholder and saves the shortcode without escaping its brackets. Code examples and inline mentions of the shortcode stay literal. If an older post saved it as `\[dcs-status\]`, switch that post to Markdown editing and remove the backslashes.
 
-The card shows the server name, whether ED lists it, player count/capacity, mission uptime, optional calculated in-game mission clock, mission, connection address, and last successful refresh. All cards refer to the single server configured by an admin, including cards in old posts. An optional desktop header badge keeps a compact summary visible while browsing. There is no bot account.
+The card shows the server name, whether ED lists it, player count/capacity, mission uptime, optional calculated in-game mission clock, mission, connection address, and last successful refresh. All cards refer to the single server configured by an admin, including cards in old posts. An optional desktop header badge keeps a compact summary visible while browsing; mobile visitors can open details from a fighter icon beside search. There is no bot account.
 
 Colors inherit the forum's active Discourse theme, including light and dark palettes. No separate color configuration is required.
 
@@ -48,9 +48,9 @@ Use your actual container name if it is not `app`. The rebuild briefly interrupt
 
 If authentication fails, check the Connection diagnostic and log into ED manually with the dedicated account. CAPTCHA/interactive verification is not automated. Successful browser access alone does not establish that unattended Ruby login works.
 
-## Optional desktop header badge
+## Optional header status
 
-Enable **Show DCS status in header** in the plugin Settings. The badge appears before the search/profile controls in desktop mode at widths of at least `64rem` (normally 1024px). It shows server name and status on the first line, then mission time (`HH:MM`) and players/capacity on the second. It does not appear on mobile or narrow layouts. The mission clock requires a configured start-time offset.
+Enable **Show DCS status in header** in the plugin Settings. The desktop badge appears before the search/profile controls at widths of at least `64rem` (normally 1024px). It shows server name and status on the first line, then mission time (`HH:MM`) and players/capacity on the second. Narrow desktop layouts have no badge. The mission clock requires a configured start-time offset.
 
 ![Desktop DCS header badge](docs/images/header-badge.png)
 
@@ -58,9 +58,17 @@ Enable **Show DCS status in header** in the plugin Settings. The badge appears b
 
 Leave **Header badge destination URL** blank to open the detailed card in a popover when clicked. Alternatively, enter a forum path such as `/t/example-server-status/123` or a public HTTP/HTTPS URL to link directly to a post containing the full card and other information. The link opens in the same tab; normal modifier-click and middle-click work. Both settings change presentation without clearing caches or triggering an ED refresh.
 
+On mobile, a small fighter-plane icon appears immediately before search. Tap it to open the full card below the header; tap **×**, the icon again, or outside the card to close it. Keyboard users can open it with Enter/Space and close it with Escape. When a destination URL is configured, **More server information** inside the card links there; tapping the icon always opens details. The active theme's existing fighter symbol is used when available, with a standard fighter icon as the fallback.
+
+![Mobile DCS header icon](docs/images/header-mobile.png)
+
+[View the mobile details](docs/images/header-mobile-details.png).
+
+The mobile card starts closed and closes on navigation. Its icon disappears when mobile search/header controls are hidden, including when a topic title occupies the header. Closing mobile details does not change desktop dismissal preferences, and dismissing the desktop summary does not remove the mobile icon. Guests on login-required forums have no DCS header controls.
+
 Visitors can select **×** to hide the summary. A small **DCS** button restores it. This choice is remembered in that browser across visits and synchronized between its open tabs; if browser storage is unavailable it lasts for the current visit. The dismiss and restore controls do not follow the configured link. Hiding the header does not hide post cards.
 
-The header shares cached requests with post cards. A dismissed badge, mobile view, or narrow layout does not poll for the header; polling continues if other cards are visible. **Not listed** means ED did not list the server; it does not establish that the server process is offline. **Stale** explicitly identifies the last known values.
+The header shares cached requests with post cards. A dismissed desktop badge, narrow desktop layout, or closed mobile icon does not poll for the header; polling continues if other cards are visible. Opening mobile details subscribes to the same cached status, refreshed every minute while the tab is visible, and closing releases that subscription. **Not listed** means ED did not list the server; it does not establish that the server process is offline. **Stale** explicitly identifies the last known values.
 
 ## Behavior and credentials
 

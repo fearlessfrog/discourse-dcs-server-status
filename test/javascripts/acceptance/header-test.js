@@ -1,4 +1,4 @@
-import { click, visit } from "@ember/test-helpers";
+import { click, settled, visit } from "@ember/test-helpers";
 import { test } from "qunit";
 import KeyValueStore from "discourse/lib/key-value-store";
 import { cloneJSON } from "discourse/lib/object";
@@ -22,6 +22,7 @@ for (const mobile of [false, true]) {
       }
       needs.pretender((server, helper) => {
         const topic = cloneJSON(topicFixtures["/t/130.json"]);
+        topic.archetype = "regular";
         topic.post_stream.posts[0].cooked =
           '<div class="dcs-server-status-placeholder">DCS server status</div>';
         server.get("/t/130.json", () => helper.response(topic));
@@ -53,14 +54,36 @@ for (const mobile of [false, true]) {
         new KeyValueStore(HEADER_STORE_NAMESPACE).remove(HEADER_HIDDEN_KEY);
       });
       if (mobile) {
-        test("mobile has no header controls or header subscription", async function (assert) {
-          await visit("/t/-/130");
-          assert.dom(".cooked .dcs-server-status-card").exists();
+        test("mobile icon opens shared details and closes across navigation and hidden controls", async function (assert) {
+          await visit("/");
+          const service = this.container.lookup("service:dcs-server-status");
+          assert.dom(".dcs-mobile-header-trigger").exists();
           assert.dom(".d-header .dcs-header-status").doesNotExist();
+          assert.strictEqual(service.consumers, 0);
+          const icon = document.querySelector(".dcs-mobile-header");
+          const search = document.querySelector(".search-dropdown");
           assert.strictEqual(
-            this.container.lookup("service:dcs-server-status").consumers,
-            1
+            icon.nextElementSibling,
+            search,
+            "the fighter is immediately before search"
           );
+          await click(".dcs-mobile-header-trigger");
+          assert.dom(".dcs-mobile-header-details").exists();
+          assert.strictEqual(service.consumers, 1);
+          await visit("/t/-/130");
+          assert.dom(".dcs-mobile-header-details").doesNotExist();
+          assert.dom(".cooked .dcs-server-status-card").exists();
+          assert.strictEqual(service.consumers, 1);
+          const header = this.container.lookup("service:header");
+          header.mainTopicTitleVisible = true;
+          await settled();
+          await click(".dcs-mobile-header-trigger");
+          assert.strictEqual(service.consumers, 2);
+          header.mainTopicTitleVisible = false;
+          await settled();
+          assert.dom(".dcs-mobile-header-trigger").doesNotExist();
+          assert.dom(".dcs-mobile-header-details").doesNotExist();
+          assert.strictEqual(service.consumers, 1);
         });
       } else {
         test("header visibility, post cards and subscriptions survive topic navigation", async function (assert) {
@@ -76,6 +99,7 @@ for (const mobile of [false, true]) {
             assert.true(gap <= 16, `${message}: no excess space`);
           };
           await visit("/t/-/130");
+          assert.dom(".dcs-mobile-header").doesNotExist();
           const service = this.container.lookup("service:dcs-server-status");
           assert.dom(".cooked .dcs-server-status-card").exists();
           assert.dom(".before-header-panel-outlet .dcs-header-status").exists();

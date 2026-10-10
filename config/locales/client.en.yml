@@ -17,6 +17,9 @@ en:
       stale: "Stale — showing the last known result"
       header:
         short_title: "DCS"
+        mobile_show: "Show DCS server status"
+        mobile_close: "Close DCS server status"
+        more_information: "More server information"
         hide: "Hide DCS header status"
         restore: "Show DCS header status"
         mission_time: "Mission time %{time}"

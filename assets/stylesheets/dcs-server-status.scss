@@ -178,6 +178,32 @@
   }
 }
 
+.dcs-mobile-header-trigger:focus-visible {
+  outline: 2px solid var(--tertiary);
+  outline-offset: -2px;
+}
+
+.dcs-mobile-header-details {
+  position: relative;
+
+  .dcs-server-status-card__heading {
+    padding-inline-end: 2rem;
+  }
+}
+
+.dcs-mobile-header-close {
+  position: absolute;
+  inset-block-start: 0.5rem;
+  inset-inline-end: 0.5rem;
+  min-width: 2rem;
+  min-height: 2rem;
+}
+
+.dcs-mobile-header-link {
+  display: block;
+  padding: 0.75em 1em;
+}
+
 .dcs-server-status-connection {
   dd {
     margin: 0 0 1em;

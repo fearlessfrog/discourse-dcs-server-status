@@ -1,10 +1,12 @@
 import { on } from "@ember/modifier";
 import { action } from "@ember/object";
 import DMenu from "discourse/float-kit/components/d-menu";
-import getURL from "discourse/lib/get-url";
-import DiscourseURL from "discourse/lib/url";
 import { i18n } from "discourse-i18n";
 import DcsServerStatusCard from "discourse/plugins/discourse-dcs-server-status/discourse/components/dcs-server-status-card";
+import {
+  followHeaderDestination,
+  headerDestination,
+} from "discourse/plugins/discourse-dcs-server-status/discourse/lib/dcs-header-destination";
 
 const BadgeContents = <template>
   <span class="dcs-header-first-line">
@@ -71,23 +73,12 @@ export default class DcsServerStatusHeaderSummary extends DcsServerStatusCard {
   }
 
   get destination() {
-    const url = this.args.url?.trim();
-    return url ? getURL(url) : null;
+    return headerDestination(this.args.url);
   }
 
   @action
   followLink(event) {
-    if (
-      event.button === 0 &&
-      !event.ctrlKey &&
-      !event.metaKey &&
-      !event.shiftKey &&
-      !event.altKey &&
-      DiscourseURL.isInternal(this.destination)
-    ) {
-      event.preventDefault();
-      DiscourseURL.routeTo(this.destination);
-    }
+    followHeaderDestination(event, this.destination);
   }
 
   @action
